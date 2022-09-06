@@ -1,0 +1,74 @@
+cards:
+  - cards:
+      - card:
+          columns:
+            - attr_as_list: next_trains
+              modify: x.destination_name
+              name: Destination
+            - attr_as_list: next_trains
+              modify: if (x.platform) {x.platform} else {"<aa>" + "NA" + "</aa>" }
+              name: Plat
+              prefix: '<style> aa { color: grey; } </style>'
+            - attr_as_list: next_trains
+              modify: x.scheduled
+              name: Time
+            - align: center
+              attr_as_list: next_trains
+              modify: >-
+                if (x.estimated ) { (parseInt(x.estimated) * 60 +
+                parseInt((x.estimated).slice(3,5))) - (parseInt(x.scheduled) *
+                60 + parseInt((x.scheduled).slice(3,5))) } else { "-1" }
+              name: Delay
+              suffix: m
+            - attr_as_list: next_trains
+              modify: >-
+                if (x.status == "STARTS HERE") { "<OO>" + "OK" + "</OO>"} else {
+                "<cc>" + x.status + "</cc>" }
+              name: Status
+              prefix: '<style> cc { color: red; } OO {color: grey;} </style>'
+          entities:
+            include: sensor.trains_lst2mkc
+          max_rows: 20
+          title: Departing Liverpool St
+          type: custom:flex-table-card
+        conditions:
+          - entity: sensor.trains_lst2mkc
+            state_not: No departures
+        type: conditional
+      - card:
+          columns:
+            - attr_as_list: next_trains
+              modify: x.origin_name
+              name: Origin
+            - attr_as_list: next_trains
+              modify: x.scheduled
+              name: Time
+            - attr_as_list: next_trains
+              modify: if (x.platform) {x.platform} else { "<aa>" + "NA" + "</aa>" }
+              name: Plat
+              prefix: '<style> aa { color: grey; } </style>'
+            - align: right
+              attr_as_list: next_trains
+              modify: >-
+                if (x.estimated ) { (parseInt(x.estimated) * 60 +
+                parseInt((x.estimated).slice(3,5))) - (parseInt(x.scheduled) *
+                60 + parseInt((x.scheduled).slice(3,5))) } else { " " }
+              name: Delay
+              suffix: m
+            - attr_as_list: next_trains
+              modify: >-
+                if (x.destination_name = "London Liverpool St") {"<LST>" + "LST"
+                + "</LST>" } else { x.destination_name }
+              name: Dest
+              prefix: '<style> LST { color: grey; } </style>'
+          entities:
+            include: sensor.trains_mkc2lst
+          max_rows: 20
+          title: Departing 
+          type: custom:flex-table-card
+        conditions:
+          - entity: sensor.trains_mkc2lst
+            state_not: No departures
+        type: conditional
+    type: vertical-stack
+type: vertical-stack
