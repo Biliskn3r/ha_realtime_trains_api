@@ -1,0 +1,94 @@
+- platform: realtime_trains_api
+  username: !secret rttun
+  password: !secret rttpw
+  scan_interval:
+    seconds: 900 # this defaults to 60 seconds (in HA) so you can change this.  Dont set it too frequent or you might get blocked for abuse of the RTT API.
+  auto_adjust_scans: true # If no depatures are retrieved, back off polling interval to 30 mins (until there are some trains)
+  queries:
+    - origin: mkc
+      destination: LST
+      # journey_data_for_next_X_trains is optional but highly recommended, 
+      # Defaults to 0. 
+      # Entering 5 here means the first 5 departures from the origin 
+      # (WAL in this case) to destination (WAT in this case) will hit 
+      # the API to lookup the number of stops, journey time and estimated
+      # arrival time to the destination (WAT in this case).
+      journey_data_for_next_X_trains: 5
+      stops_of_interest:
+        - SNF # a stop_of_interest will add data about this stop to each train's data (only if journey_data is gathered for that journey).  Means you can add more context to the train journey (e.g. my commute can start at two stops for some trains, only one for others meaning it might change my choice of train if I can get on at VXH instead of WAT)
+      sensor_name:  Trains mkc2LST # this will appear as 'sensor.my_custom_journey'
+    # - origin: LST
+    #   destination: mkc
+    #  sensor_name:  Trains mkc2LST # this will appear as 'sensor.my_custom_journey'
+    #   time_offset:
+    #     minutes: 20 # This will display departures from now+20 minutes - useful if the station is 20 minutes travel/walk away.
+
+- platform: realtime_trains_api
+  username: !secret rttun
+  password: !secret rttpw
+  scan_interval:
+    seconds: 900 # this defaults to 60 seconds (in HA) so you can change this.  Dont set it too frequent or you might get blocked for abuse of the RTT API.
+  auto_adjust_scans: true # If no depatures are retrieved, back off polling interval to 30 mins (until there are some trains)
+  queries:
+    - origin: LST
+      destination: mkc
+      journey_data_for_next_X_trains: 7
+
+      sensor_name: Trains LST2mkc # this will appear as 'sensor.my_custom_journey'
+      time_offset:
+        minutes: 20 # This will display departures from now+20 minutes - useful if the station is 20 minutes travel/walk away.
+
+- platform: template
+  sensors:
+
+#Trains to mkc
+    next_train_status_mkc:
+      friendly_name: 'Status mkc'
+      value_template: '{{states.sensor.trains_mkc2lst.attributes.next_trains[0].status}}'
+    next_trains_origin_mkc:
+      friendly_name: 'Train Origin mkc'
+      value_template: '{{states.sensor.trains_mkc2lst.attributes.next_trains[0].origin_name}}'
+    next_trains_estimated_mkc:
+      friendly_name: 'Estimated time mkc'
+      value_template: '{{states.sensor.trains_mkc2lst.attributes.next_trains[0].estimated}}'
+    next_trains_scheduled_mkc:
+      friendly_name: 'Scheduled time mkc'
+      value_template: '{{states.sensor.trains_mkc2lst.attributes.next_trains[0].scheduled}}'
+    next_trains_platform_mkc:
+      friendly_name: 'Platform number mkc'
+      value_template: '{{states.sensor.trains_mkc2lst.attributes.next_trains[0].platform}}'
+    next_trains_journey_mins_mkc:
+      friendly_name: 'Journey Minutes mkc'
+      value_template: '{{states.sensor.trains_mkc2lst.attributes.next_trains[0].journey_time_mins}}'
+    next_trains_journey_stops_mkc:
+      friendly_name: 'Journey Stops mkc'
+      value_template: '{{states.sensor.trains_mkc2lst.attributes.next_trains[0].stops}}'
+    next_trains_next_train_mins_mkc:
+      friendly_name: 'Next Train in Minutes mkc'
+      value_template: '{{states.sensor.trains_mkc2lst.attributes.next_trains[0].minutes}}'
+
+#Trains to LST
+    next_train_status_lst:
+      friendly_name: 'Status LST'
+      value_template: '{{states.sensor.trains_lst2mkc.attributes.next_trains[0].status}}'
+    next_trains_origin_lst:
+      friendly_name: 'Train origin LST'
+      value_template: '{{states.sensor.trains_lst2mkc.attributes.next_trains[0].origin_name}}'
+    next_trains_estimated_lst:
+      friendly_name: 'Estimated time LST'
+      value_template: '{{states.sensor.trains_lst2mkc.attributes.next_trains[0].estimated}}'
+    next_trains_scheduled_lst:
+      friendly_name: 'Scheduled time LST'
+      value_template: '{{states.sensor.trains_lst2mkc.attributes.next_trains[0].scheduled}}'
+    next_trains_platform_lst:
+      friendly_name: 'Platform number LST'
+      value_template: '{{states.sensor.trains_lst2mkc.attributes.next_trains[0].platform}}'
+    next_trains_journey_mins_lst:
+      friendly_name: 'Journey Minutes LST'
+      value_template: '{{states.sensor.trains_lst2mkc.attributes.next_trains[0].journey_time_mins}}'
+    next_trains_journey_stops_lst:
+      friendly_name: 'Journey Stops LST'
+      value_template: '{{states.sensor.trains_lst2mkc.attributes.next_trains[0].stops}}'
+    next_trains_next_train_mins_lst:
+      friendly_name: 'Next Train in Minutes LST'
+      value_template: '{{states.sensor.trains_lst2mkc.attributes.next_trains[0].minutes}}'
