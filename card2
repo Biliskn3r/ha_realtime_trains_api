@@ -1,0 +1,37 @@
+entities:
+  - label: Liverpool St to Home
+    type: section
+  - entity: sensor.next_trains_next_train_mins_lst
+    icon: mdi:run
+  - entity: sensor.next_trains_platform_lst
+    icon: mdi:train
+  - entity: sensor.next_trains_scheduled_lst
+    icon: mdi:school-outline
+  - entity: sensor.next_trains_estimated_lst
+    icon: mdi:folder
+  - entity: sensor.next_trains_journey_stops_lst
+    icon: mdi:road-variant
+  - entity: sensor.next_trains_journey_mins_lst
+    icon: mdi:clock
+  - entity: sensor.next_trains_origin_lst
+    icon: mdi:home
+  - entity: sensor.next_train_status_lst
+  - label:  Home to Liverpool St
+    type: section
+  - entity: sensor.next_trains_next_train_mins_mkc
+    icon: mdi:run
+  - entity: sensor.next_trains_origin_mkc
+    icon: mdi:home
+  - entity: sensor.next_trains_scheduled_mkc
+    icon: mdi:school-outline
+  - entity: sensor.next_trains_estimated_mkc
+    icon: mdi:folder
+  - entity: sensor.next_trains_journey_stops_mkc
+    icon: mdi:road-variant
+  - entity: sensor.next_trains_journey_mins_mkc
+    icon: mdi:clock
+  - entity: sensor.next_trains_platform_mkc
+    icon: mdi:train
+show_header_toggle: false
+title: Next Train Departures
+type: entities
